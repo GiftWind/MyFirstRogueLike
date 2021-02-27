@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using MyFirstRogueLike.Core;
+using MyFirstRogueLike.Systems;
 using RLNET;
 
 namespace MyFirstRogueLike
@@ -38,6 +39,10 @@ namespace MyFirstRogueLike
         private static readonly int _inventoryWidth = 80;
         private static readonly int _inventoryHeight = 11;
         private static RLConsole _inventoryConsole;
+                  
+        public static DungeonMap dungeonMap;
+
+        public static Player Player { get; private set; }
 
         static void Main(string[] args)
         {
@@ -45,6 +50,13 @@ namespace MyFirstRogueLike
             string fontFileName = "terminal8x8.png";
 
             string consoleTitle = "MyRogueLike - Phase 1";
+
+            Player = new Player();
+
+            MapGenerator mapGenerator = new MapGenerator(_mapWidth, _mapHeight);
+            dungeonMap = mapGenerator.CreateMap();
+
+            dungeonMap.UpdatePlayerFOV();
 
             // Instantiating the root console
             _rootConsole = new RLRootConsole(fontFileName, _screenWidth, _screenHeight, _tileSize, _tileSize, _tileScale, consoleTitle);
@@ -69,6 +81,8 @@ namespace MyFirstRogueLike
             RLConsole.Blit(_messageConsole, 0, 0, _messageWidth, _messageHeight, _rootConsole, 0, _screenHeight - _messageHeight);
             RLConsole.Blit(_statsConsole, 0, 0, _statsWidth, _statsHeight, _rootConsole, _mapWidth, 0);
             RLConsole.Blit(_inventoryConsole, 0, 0, _inventoryWidth, _inventoryHeight, _rootConsole, 0, 0);
+            dungeonMap.Draw(_mapConsole);
+            Player.Draw(_mapConsole, dungeonMap);
 
             _rootConsole.Draw();
         }
@@ -76,7 +90,6 @@ namespace MyFirstRogueLike
         private static void OnRootConsoleUpdate(object sender, UpdateEventArgs e)
         {
             _mapConsole.SetBackColor(0, 0, _mapWidth, _mapHeight, Colors.MapConsoleBackground);
-            _mapConsole.Print(1, 1, "Map", Colors.TextHeading);
 
             _messageConsole.SetBackColor(0, 0, _messageWidth, _messageHeight, Colors.MessageConsoleBackground);
             _messageConsole.Print(1, 1, "Message", Colors.TextHeading);
