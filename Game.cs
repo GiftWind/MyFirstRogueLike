@@ -67,6 +67,15 @@ namespace MyFirstRogueLike
             _statsConsole = new RLConsole(_statsWidth, _statsHeight);
             _inventoryConsole = new RLConsole(_inventoryWidth, _inventoryHeight);
 
+            _messageConsole.SetBackColor(0, 0, _messageWidth, _messageHeight, Colors.MessageConsoleBackground);
+            _messageConsole.Print(1, 1, "Message", Colors.TextHeading);
+
+            _statsConsole.SetBackColor(0, 0, _statsWidth, _statsHeight, Colors.StatsConsoleBackground);
+            _statsConsole.Print(1, 1, "Stats", Colors.TextHeading);
+
+            _inventoryConsole.SetBackColor(0, 0, _inventoryWidth, _inventoryHeight, Colors.InventoryConsoleBackground);
+            _inventoryConsole.Print(1, 1, "Inventory", Colors.TextHeading);
+
             _rootConsole.Update += OnRootConsoleUpdate;
             _rootConsole.Render += OnRootConsoleRender;
 
@@ -89,16 +98,7 @@ namespace MyFirstRogueLike
 
         private static void OnRootConsoleUpdate(object sender, UpdateEventArgs e)
         {
-            _mapConsole.SetBackColor(0, 0, _mapWidth, _mapHeight, Colors.MapConsoleBackground);
 
-            _messageConsole.SetBackColor(0, 0, _messageWidth, _messageHeight, Colors.MessageConsoleBackground);
-            _messageConsole.Print(1, 1, "Message", Colors.TextHeading);
-
-            _statsConsole.SetBackColor(0, 0, _statsWidth, _statsHeight, Colors.StatsConsoleBackground);
-            _statsConsole.Print(1, 1, "Stats", Colors.TextHeading);
-
-            _inventoryConsole.SetBackColor(0, 0, _inventoryWidth, _inventoryHeight, Colors.InventoryConsoleBackground);
-            _inventoryConsole.Print(1, 1, "Inventory", Colors.TextHeading);
         }
 
     }

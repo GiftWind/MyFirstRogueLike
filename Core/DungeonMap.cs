@@ -11,7 +11,7 @@ namespace MyFirstRogueLike.Core
 {
     public class DungeonMap : Map<DungeonCell>
     {
-        // TODO: Make it readonly later
+
         private readonly FieldOfView<DungeonCell> _fieldOfView;
 
         public void Draw(RLConsole mapConsole)
@@ -31,7 +31,6 @@ namespace MyFirstRogueLike.Core
 
         private void SetSymbolForCell(RLConsole mapConsole, DungeonCell cell)
         {
-            // TODO: add a list of visited cells
 
             if (!cell.IsExplored)
             {
@@ -61,7 +60,6 @@ namespace MyFirstRogueLike.Core
             this[x, y].IsExplored = isExplored;
         }
 
-        // Quick stub. The new version of RogueSharp is too different
         public bool IsInFov(Cell cell)
         {
             return _fieldOfView.IsInFov(cell.X, cell.Y);
@@ -79,9 +77,7 @@ namespace MyFirstRogueLike.Core
             foreach (Cell cell in GetAllCells())
             {
                 if (IsInFov(cell.X, cell.Y))
-                {
                     SetCellProperties(cell.X, cell.Y, cell.IsTransparent, cell.IsWalkable, true);
-                }
             }
         }
 
