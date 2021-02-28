@@ -53,6 +53,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Core\Actor.cs" />
+    <Compile Include="Core\Direction.cs" />
     <Compile Include="Core\Colors.cs" />
     <Compile Include="Core\DungeonCell.cs" />
     <Compile Include="Core\DungeonMap.cs" />
