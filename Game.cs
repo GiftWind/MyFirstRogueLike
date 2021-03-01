@@ -11,6 +11,8 @@ namespace MyFirstRogueLike
 {
     class Game
     {
+        private static bool _renderRequired = true;
+
         // Tiles settings
         private static readonly int _tileSize = 8;
         private static readonly float _tileScale = 1F;
@@ -40,9 +42,11 @@ namespace MyFirstRogueLike
         private static readonly int _inventoryHeight = 11;
         private static RLConsole _inventoryConsole;
                   
-        public static DungeonMap dungeonMap;
+        public static DungeonMap DungeonMap;
 
         public static Player Player { get; private set; }
+
+        public static CommandSystem CommandSystem { get; private set; }
 
         static void Main(string[] args)
         {
@@ -54,9 +58,11 @@ namespace MyFirstRogueLike
             Player = new Player();
 
             MapGenerator mapGenerator = new MapGenerator(_mapWidth, _mapHeight);
-            dungeonMap = mapGenerator.CreateMap();
+            DungeonMap = mapGenerator.CreateMap();
 
-            dungeonMap.UpdatePlayerFOV();
+            CommandSystem = new CommandSystem();
+
+            DungeonMap.UpdatePlayerFOV();
 
             // Instantiating the root console
             _rootConsole = new RLRootConsole(fontFileName, _screenWidth, _screenHeight, _tileSize, _tileSize, _tileScale, consoleTitle);
@@ -86,19 +92,44 @@ namespace MyFirstRogueLike
         private static void OnRootConsoleRender(object sender, UpdateEventArgs e)
         {
             // Blit the sub consoles to the root console in the correct locations
-            RLConsole.Blit(_mapConsole, 0, 0, _mapWidth, _mapHeight, _rootConsole, 0, _inventoryHeight);
-            RLConsole.Blit(_messageConsole, 0, 0, _messageWidth, _messageHeight, _rootConsole, 0, _screenHeight - _messageHeight);
-            RLConsole.Blit(_statsConsole, 0, 0, _statsWidth, _statsHeight, _rootConsole, _mapWidth, 0);
-            RLConsole.Blit(_inventoryConsole, 0, 0, _inventoryWidth, _inventoryHeight, _rootConsole, 0, 0);
-            dungeonMap.Draw(_mapConsole);
-            Player.Draw(_mapConsole, dungeonMap);
+            
+            if (_renderRequired)
+            {
+                DungeonMap.Draw(_mapConsole);
+                Player.Draw(_mapConsole, DungeonMap);
 
-            _rootConsole.Draw();
+                RLConsole.Blit(_mapConsole, 0, 0, _mapWidth, _mapHeight, _rootConsole, 0, _inventoryHeight);
+                RLConsole.Blit(_messageConsole, 0, 0, _messageWidth, _messageHeight, _rootConsole, 0, _screenHeight - _messageHeight);
+                RLConsole.Blit(_statsConsole, 0, 0, _statsWidth, _statsHeight, _rootConsole, _mapWidth, 0);
+                RLConsole.Blit(_inventoryConsole, 0, 0, _inventoryWidth, _inventoryHeight, _rootConsole, 0, 0);
+
+                _rootConsole.Draw();
+                _renderRequired = false;
+            }
+
         }
 
         private static void OnRootConsoleUpdate(object sender, UpdateEventArgs e)
         {
+            bool didPlayerAct = false;
+            RLKeyPress keyPress = _rootConsole.Keyboard.GetKeyPress();
 
+            if (keyPress != null)
+            {
+                if (keyPress.Key == RLKey.Up)
+                    didPlayerAct = CommandSystem.MovePlayer(Direction.Up);
+                else if (keyPress.Key == RLKey.Down)
+                    didPlayerAct = CommandSystem.MovePlayer(Direction.Down);
+                else if (keyPress.Key == RLKey.Left)
+                    didPlayerAct = CommandSystem.MovePlayer(Direction.Left);
+                else if (keyPress.Key == RLKey.Right)
+                    didPlayerAct = CommandSystem.MovePlayer(Direction.Right);
+                else if (keyPress.Key == RLKey.Escape)
+                    _rootConsole.Close();
+            }
+
+            if (didPlayerAct)
+                _renderRequired = true;
         }
 
     }

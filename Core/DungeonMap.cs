@@ -85,5 +85,29 @@ namespace MyFirstRogueLike.Core
         {
             return _fieldOfView.ComputeFov(xOrigin, yOrigin, radius, lightWalls);
         }
+
+        public bool SetActorPositon(Actor actor, int x, int y)
+        {
+            if (GetCell(x, y).IsWalkable)
+            {
+                SetIsWalkable(actor.X, actor.Y, true);
+                actor.X = x;
+                actor.Y = y;
+                SetIsWalkable(actor.X, actor.Y, false);
+                if (actor is Player)
+                {
+                    UpdatePlayerFOV();
+                }
+                return true;
+            }
+
+            return false;
+        }
+
+        private void SetIsWalkable(int x, int y, bool isWalkable)
+        {
+            DungeonCell cell = GetCell(x, y);
+            SetCellProperties(cell.X, cell.Y, cell.IsTransparent, isWalkable, cell.IsExplored);
+        }
     }
 }
