@@ -11,6 +11,7 @@ namespace MyFirstRogueLike.Core
 {
     public class DungeonMap : Map<DungeonCell>
     {
+        public List<Rectangle> rooms;
 
         private readonly FieldOfView<DungeonCell> _fieldOfView;
 
@@ -27,6 +28,7 @@ namespace MyFirstRogueLike.Core
         public DungeonMap()
         {
             _fieldOfView = new FieldOfView<DungeonCell>(this);
+            rooms = new List<Rectangle>();
         }
 
         private void SetSymbolForCell(RLConsole mapConsole, DungeonCell cell)

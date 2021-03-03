@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using MyFirstRogueLike.Core;
 using MyFirstRogueLike.Systems;
 using RLNET;
+using RogueSharp.Random;
 
 namespace MyFirstRogueLike
 {
@@ -43,6 +44,7 @@ namespace MyFirstRogueLike
         private static RLConsole _inventoryConsole;
                   
         public static DungeonMap DungeonMap;
+        public static IRandom Random { get; private set; }
 
         public static Player Player { get; private set; }
 
@@ -53,11 +55,18 @@ namespace MyFirstRogueLike
             // Bitmap font file:
             string fontFileName = "terminal8x8.png";
 
-            string consoleTitle = "MyRogueLike - Phase 1";
+            int seed = (int)DateTime.UtcNow.Ticks;
+            Random = new DotNetRandom(seed);
+
+            string consoleTitle = $"MyRogueLike - Phase 1 - Seed {seed}";
 
             Player = new Player();
 
-            MapGenerator mapGenerator = new MapGenerator(_mapWidth, _mapHeight);
+            int maxRooms = 20;
+            int minRoomSize = 7;
+            int maxRoomSize = 13;
+
+            MapGenerator mapGenerator = new MapGenerator(_mapWidth, _mapHeight, maxRooms, minRoomSize, maxRoomSize);
             DungeonMap = mapGenerator.CreateMap();
 
             CommandSystem = new CommandSystem();
