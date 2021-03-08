@@ -46,7 +46,7 @@ namespace MyFirstRogueLike
         public static DungeonMap DungeonMap;
         public static IRandom Random { get; private set; }
 
-        public static Player Player { get; private set; }
+        public static Player Player { get; set; }
 
         public static CommandSystem CommandSystem { get; private set; }
 
@@ -60,7 +60,7 @@ namespace MyFirstRogueLike
 
             string consoleTitle = $"MyRogueLike - Phase 1 - Seed {seed}";
 
-            Player = new Player();
+
 
             int maxRooms = 20;
             int minRoomSize = 7;

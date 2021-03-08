@@ -61,16 +61,30 @@ namespace MyFirstRogueLike.Systems
                     _map.rooms.Add(newRoom);
                 }
             }
-                foreach (var room in _map.rooms)
-                {
+
+            foreach (var room in _map.rooms)
+            {
                     CreateRoom(room);
-                }
+            }
 
-                return _map;
-
-            
+            PlacePlayer();
 
             return _map;
+
+           
+        }
+
+        private void PlacePlayer()
+        {
+            Player player = Game.Player;
+            if (player == null)
+            {
+                player = new Player();
+            }
+            player.X = _map.rooms[0].Center.X;
+            player.Y = _map.rooms[0].Center.Y;
+
+            _map.AddPlayer(player);
         }
 
         private void CreateRoom(Rectangle room)
