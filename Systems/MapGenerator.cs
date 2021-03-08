@@ -64,7 +64,28 @@ namespace MyFirstRogueLike.Systems
 
             foreach (var room in _map.rooms)
             {
-                    CreateRoom(room);
+                CreateRoom(room);
+            }
+
+            for (int r = 1; r < _map.rooms.Count; r++)
+            {
+                // Get the centers of current and previous rooms
+                int previousRoomCenterX = _map.rooms[r - 1].Center.X;
+                int previousRoomCenterY = _map.rooms[r - 1].Center.Y;
+                int currentRoomCenterX = _map.rooms[r].Center.X;
+                int currentRoomCenterY = _map.rooms[r].Center.Y;
+
+                // Random generation of L-shape tunnel
+                if (Game.Random.Next(0, 1) == 1)
+                {
+                    CreateVerticalTunnel(previousRoomCenterY, currentRoomCenterY, previousRoomCenterX);
+                    CreateHorizontalTunnel(previousRoomCenterX, currentRoomCenterX, currentRoomCenterY);
+                }
+                else
+                {
+                    CreateHorizontalTunnel(previousRoomCenterX, currentRoomCenterX, previousRoomCenterY);
+                    CreateVerticalTunnel(previousRoomCenterY, currentRoomCenterY, currentRoomCenterX);
+                }
             }
 
             PlacePlayer();
@@ -95,6 +116,22 @@ namespace MyFirstRogueLike.Systems
                 {
                     _map.SetCellProperties(x, y, true, true, true);
                 }
+            }
+        }
+
+        private void CreateHorizontalTunnel(int xStart, int xEnd, int yPosition)
+        {
+            for (int x = Math.Min(xStart, xEnd); x <= Math.Max(xStart, xEnd); x++)
+            {
+                _map.SetCellProperties(x, yPosition, true, true);
+            }
+        }
+
+        private void CreateVerticalTunnel(int yStart, int yEnd, int xPosition)
+        {
+            for (int y = Math.Min(yStart, yEnd); y <= Math.Max(yStart, yEnd); y++)
+            {
+                _map.SetCellProperties(xPosition, y, true, true);
             }
         }
     }
