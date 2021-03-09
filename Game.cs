@@ -45,10 +45,9 @@ namespace MyFirstRogueLike
                   
         public static DungeonMap DungeonMap;
         public static IRandom Random { get; private set; }
-
         public static Player Player { get; set; }
-
         public static CommandSystem CommandSystem { get; private set; }
+        public static MessageLog MessageLog { get; private set; }
 
         static void Main(string[] args)
         {
@@ -59,8 +58,6 @@ namespace MyFirstRogueLike
             Random = new DotNetRandom(seed);
 
             string consoleTitle = $"MyRogueLike - Phase 1 - Seed {seed}";
-
-
 
             int maxRooms = 20;
             int minRoomSize = 7;
@@ -73,6 +70,10 @@ namespace MyFirstRogueLike
 
             DungeonMap.UpdatePlayerFOV();
 
+            MessageLog = new MessageLog();
+            MessageLog.AddMessage("The rogue arrives on level 1");
+            MessageLog.AddMessage($"Level created with seed {seed}");
+
             // Instantiating the root console
             _rootConsole = new RLRootConsole(fontFileName, _screenWidth, _screenHeight, _tileSize, _tileSize, _tileScale, consoleTitle);
 
@@ -82,8 +83,6 @@ namespace MyFirstRogueLike
             _statsConsole = new RLConsole(_statsWidth, _statsHeight);
             _inventoryConsole = new RLConsole(_inventoryWidth, _inventoryHeight);
 
-            _messageConsole.SetBackColor(0, 0, _messageWidth, _messageHeight, Colors.MessageConsoleBackground);
-            _messageConsole.Print(1, 1, "Message", Colors.TextHeading);
 
             _statsConsole.SetBackColor(0, 0, _statsWidth, _statsHeight, Colors.StatsConsoleBackground);
             _statsConsole.Print(1, 1, "Stats", Colors.TextHeading);
@@ -97,6 +96,9 @@ namespace MyFirstRogueLike
             // Begin the game loop
             _rootConsole.Run();
         }
+
+        // Temporary member variable just to show our MessageLog is working
+        private static int _steps = 0;
 
         private static void OnRootConsoleRender(object sender, UpdateEventArgs e)
         {
@@ -114,6 +116,7 @@ namespace MyFirstRogueLike
 
                 _rootConsole.Draw();
                 _renderRequired = false;
+                MessageLog.Draw(_messageConsole);
             }
 
         }
@@ -138,7 +141,10 @@ namespace MyFirstRogueLike
             }
 
             if (didPlayerAct)
+            {
+                MessageLog.AddMessage($"Step # {++_steps}");
                 _renderRequired = true;
+            }
         }
 
     }
