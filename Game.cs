@@ -84,9 +84,6 @@ namespace MyFirstRogueLike
             _inventoryConsole = new RLConsole(_inventoryWidth, _inventoryHeight);
 
 
-            _statsConsole.SetBackColor(0, 0, _statsWidth, _statsHeight, Colors.StatsConsoleBackground);
-            _statsConsole.Print(1, 1, "Stats", Colors.TextHeading);
-
             _inventoryConsole.SetBackColor(0, 0, _inventoryWidth, _inventoryHeight, Colors.InventoryConsoleBackground);
             _inventoryConsole.Print(1, 1, "Inventory", Colors.TextHeading);
 
@@ -97,8 +94,6 @@ namespace MyFirstRogueLike
             _rootConsole.Run();
         }
 
-        // Temporary member variable just to show our MessageLog is working
-        private static int _steps = 0;
 
         private static void OnRootConsoleRender(object sender, UpdateEventArgs e)
         {
@@ -108,6 +103,8 @@ namespace MyFirstRogueLike
             {
                 DungeonMap.Draw(_mapConsole);
                 Player.Draw(_mapConsole, DungeonMap);
+
+                Player.DrawStats(_statsConsole);
 
                 RLConsole.Blit(_mapConsole, 0, 0, _mapWidth, _mapHeight, _rootConsole, 0, _inventoryHeight);
                 RLConsole.Blit(_messageConsole, 0, 0, _messageWidth, _messageHeight, _rootConsole, 0, _screenHeight - _messageHeight);
@@ -142,7 +139,6 @@ namespace MyFirstRogueLike
 
             if (didPlayerAct)
             {
-                MessageLog.AddMessage($"Step # {++_steps}");
                 _renderRequired = true;
             }
         }

@@ -26,5 +26,8 @@ namespace MyFirstRogueLike.Core
         public static RLColor MessageConsoleBackground = Palette.DbDeepWater;
         public static RLColor StatsConsoleBackground = Palette.DbOldStone;
         public static RLColor InventoryConsoleBackground = Palette.DbWood;
+
+        public static RLColor Text = Palette.DbLight;
+        public static RLColor Gold = Palette.DbSun;
     }
 }

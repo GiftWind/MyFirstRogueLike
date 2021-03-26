@@ -18,6 +18,14 @@ namespace MyFirstRogueLike.Core
         public char Symbol { get; set; }
         public int X { get; set; }
         public int Y { get; set; }
+        public int Attack { get ; set ; }
+        public int AttackChance { get; set; }
+        public int Defense { get; set; }
+        public int DefenseChance { get; set; }
+        public int Gold { get; set; }
+        public int Health { get; set; }
+        public int MaxHealth { get; set; }
+        public int Speed { get; set; }
 
         public void Draw(RLConsole console, DungeonMap map)
         {
