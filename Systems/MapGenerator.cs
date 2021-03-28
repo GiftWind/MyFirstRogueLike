@@ -1,5 +1,7 @@
 ﻿using MyFirstRogueLike.Core;
+using MyFirstRogueLike.Monsters;
 using RogueSharp;
+using RogueSharp.DiceNotation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -89,6 +91,7 @@ namespace MyFirstRogueLike.Systems
             }
 
             PlacePlayer();
+            PlaceMonsters();
 
             return _map;
 
@@ -106,6 +109,30 @@ namespace MyFirstRogueLike.Systems
             player.Y = _map.rooms[0].Center.Y;
 
             _map.AddPlayer(player);
+        }
+
+        private void PlaceMonsters()
+        {
+            foreach (var room in _map.rooms)
+            {
+                // 60% chance of having monsters in every room
+                if (Dice.Roll("1D10") < 7)
+                {
+                    var numberOfMonsters = Dice.Roll("1D4");
+                    for (int i = 0; i < numberOfMonsters; i++)
+                    {
+                        Point? randomLocation = _map.GetRandomWalkableLocationInRoom(room);
+                        if (randomLocation != null)
+                        {
+                            // Hardcode level 1 kobold 
+                            var monster = Kobold.Create(1);
+                            monster.X = randomLocation.Value.X;
+                            monster.Y = randomLocation.Value.Y;
+                            _map.AddMonster(monster);
+                        }
+                    }
+                }
+            }
         }
 
         private void CreateRoom(Rectangle room)

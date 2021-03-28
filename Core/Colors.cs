@@ -29,5 +29,7 @@ namespace MyFirstRogueLike.Core
 
         public static RLColor Text = Palette.DbLight;
         public static RLColor Gold = Palette.DbSun;
+
+        public static RLColor KoboldColor = Palette.DbBrightWood;
     }
 }

@@ -14,6 +14,7 @@ namespace MyFirstRogueLike.Core
         public List<Rectangle> rooms;
 
         private readonly FieldOfView<DungeonCell> _fieldOfView;
+        private readonly List<Monster> _monsters;
 
         public void Draw(RLConsole mapConsole)
         {
@@ -22,6 +23,10 @@ namespace MyFirstRogueLike.Core
             {
                 SetSymbolForCell(mapConsole, cell);
             }
+            foreach (Monster monster in _monsters)
+            {
+                monster.Draw(mapConsole, this);
+            }
             
         }
 
@@ -29,6 +34,7 @@ namespace MyFirstRogueLike.Core
         {
             _fieldOfView = new FieldOfView<DungeonCell>(this);
             rooms = new List<Rectangle>();
+            _monsters = new List<Monster>();
         }
 
         private void SetSymbolForCell(RLConsole mapConsole, DungeonCell cell)
@@ -117,6 +123,45 @@ namespace MyFirstRogueLike.Core
             Game.Player = player;
             SetIsWalkable(player.X, player.Y, false);
             UpdatePlayerFOV();
+        }
+
+        public void AddMonster(Monster monster)
+        {
+            _monsters.Add(monster);
+            SetIsWalkable(monster.X, monster.Y, false);
+        }
+
+        // Get the random walkable cell
+        public Point? GetRandomWalkableLocationInRoom(Rectangle room)
+        {
+            if (RoomHaveWalkableSpace(room))
+            {
+                for (int i = 0; i < 100; i++)
+                {
+                    int x = Game.Random.Next(1, room.Width - 2) + room.X;
+                    int y = Game.Random.Next(1, room.Height - 2) + room.Y;
+                    if (IsWalkable(x, y))
+                    {
+                        return new Point(x, y);
+                    }
+                }
+            }
+            return null;
+        }
+
+        private bool RoomHaveWalkableSpace(Rectangle room)
+        {
+            for (int x = 1; x <= room.Width - 2; x++)
+            {
+                for (int y = 1; y <= room.Height - 2; y++)
+                {
+                    if (IsWalkable(x + room.X, y + room.Y))
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
         }
     }
 }
