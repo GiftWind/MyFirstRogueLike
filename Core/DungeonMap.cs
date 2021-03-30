@@ -16,16 +16,24 @@ namespace MyFirstRogueLike.Core
         private readonly FieldOfView<DungeonCell> _fieldOfView;
         private readonly List<Monster> _monsters;
 
-        public void Draw(RLConsole mapConsole)
+        public void Draw(RLConsole mapConsole, RLConsole statConsole)
         {
             mapConsole.Clear();
             foreach (DungeonCell cell in GetAllCells())
             {
                 SetSymbolForCell(mapConsole, cell);
             }
+
+            int mosterIndex = 0;
+
             foreach (Monster monster in _monsters)
             {
                 monster.Draw(mapConsole, this);
+                if (IsInFov(monster.X, monster.Y))
+                {
+                    monster.DrawStats(statConsole, mosterIndex);
+                    mosterIndex++;
+                }
             }
             
         }

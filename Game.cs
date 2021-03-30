@@ -101,7 +101,10 @@ namespace MyFirstRogueLike
             
             if (_renderRequired)
             {
-                DungeonMap.Draw(_mapConsole);
+                _mapConsole.Clear();
+                _statsConsole.Clear();
+                _messageConsole.Clear();
+                DungeonMap.Draw(_mapConsole, _statsConsole);
                 Player.Draw(_mapConsole, DungeonMap);
 
                 Player.DrawStats(_statsConsole);
