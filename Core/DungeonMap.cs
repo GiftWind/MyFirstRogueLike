@@ -139,6 +139,17 @@ namespace MyFirstRogueLike.Core
             SetIsWalkable(monster.X, monster.Y, false);
         }
 
+        public void RemoveMonster(Monster monster)
+        {
+            _monsters.Remove(monster);
+            SetIsWalkable(monster.X, monster.Y, true);
+        }
+
+        public Monster GetMonsterAt(int x, int y)
+        {
+            return _monsters.FirstOrDefault(monster => monster.X == x && monster.Y == y);
+        }
+
         // Get the random walkable cell
         public Point? GetRandomWalkableLocationInRoom(Rectangle room)
         {

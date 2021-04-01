@@ -106,8 +106,8 @@ namespace MyFirstRogueLike
                 _messageConsole.Clear();
                 DungeonMap.Draw(_mapConsole, _statsConsole);
                 Player.Draw(_mapConsole, DungeonMap);
-
                 Player.DrawStats(_statsConsole);
+                MessageLog.Draw(_messageConsole);
 
                 RLConsole.Blit(_mapConsole, 0, 0, _mapWidth, _mapHeight, _rootConsole, 0, _inventoryHeight);
                 RLConsole.Blit(_messageConsole, 0, 0, _messageWidth, _messageHeight, _rootConsole, 0, _screenHeight - _messageHeight);
