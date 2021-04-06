@@ -1,4 +1,6 @@
 ﻿using MyFirstRogueLike.Core;
+using MyFirstRogueLike.Interfaces;
+using RogueSharp;
 using RogueSharp.DiceNotation;
 using System;
 using System.Collections.Generic;
@@ -10,6 +12,11 @@ namespace MyFirstRogueLike.Systems
 {
     public class CommandSystem
     {
+        public bool IsPlayerTurn { get; set; }
+        public void EndPlayerTurn()
+        {
+            IsPlayerTurn = false;
+        }
         public bool MovePlayer(Direction direction)
         {
             int x = Game.Player.X;
@@ -159,6 +166,37 @@ namespace MyFirstRogueLike.Systems
                 }
             }
             return hits;
+        }
+
+        public void ActivateMonsters()
+        {
+            ISchedulable schedulable = Game.SchedulingSystem.GetNextSchedulable();
+            if (schedulable is Player)
+            {
+                IsPlayerTurn = true;
+                Game.SchedulingSystem.Add(Game.Player);
+            }
+            else
+            {
+                Monster monster = schedulable as Monster;
+                if (monster != null)
+                {
+                    monster.PerformAction(this);
+                    Game.SchedulingSystem.Add(monster);
+                }
+                ActivateMonsters();
+            }
+        }
+
+        public void MoveMonster(Monster monster, Cell cell)
+        {
+            if (!Game.DungeonMap.SetActorPositon(monster, cell.X, cell.Y))
+            {
+                if (Game.Player.X == cell.X && Game.Player.Y == cell.Y)
+                {
+                    Attack(monster, Game.Player);
+                }
+            }
         }
     }
 }

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace MyFirstRogueLike.Core
 {
-    public class Actor : IActor, IDrawable
+    public class Actor : IActor, IDrawable, ISchedulable
     {
         public string Name { get; set; }
         public int Awareness { get; set; }
@@ -26,6 +26,8 @@ namespace MyFirstRogueLike.Core
         public int Health { get; set; }
         public int MaxHealth { get; set; }
         public int Speed { get; set; }
+
+        public int Time { get => Speed; }
 
         public void Draw(RLConsole console, DungeonMap map)
         {

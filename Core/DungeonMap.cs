@@ -13,7 +13,7 @@ namespace MyFirstRogueLike.Core
     {
         public List<Rectangle> rooms;
 
-        private readonly FieldOfView<DungeonCell> _fieldOfView;
+        public readonly FieldOfView<DungeonCell> _fieldOfView;
         private readonly List<Monster> _monsters;
 
         public void Draw(RLConsole mapConsole, RLConsole statConsole)
@@ -120,7 +120,7 @@ namespace MyFirstRogueLike.Core
             return false;
         }
 
-        private void SetIsWalkable(int x, int y, bool isWalkable)
+        public void SetIsWalkable(int x, int y, bool isWalkable)
         {
             DungeonCell cell = GetCell(x, y);
             SetCellProperties(cell.X, cell.Y, cell.IsTransparent, isWalkable, cell.IsExplored);
@@ -131,18 +131,21 @@ namespace MyFirstRogueLike.Core
             Game.Player = player;
             SetIsWalkable(player.X, player.Y, false);
             UpdatePlayerFOV();
+            Game.SchedulingSystem.Add(player);
         }
 
         public void AddMonster(Monster monster)
         {
             _monsters.Add(monster);
             SetIsWalkable(monster.X, monster.Y, false);
+            Game.SchedulingSystem.Add(monster);
         }
 
         public void RemoveMonster(Monster monster)
         {
             _monsters.Remove(monster);
             SetIsWalkable(monster.X, monster.Y, true);
+            Game.SchedulingSystem.Remove(monster);
         }
 
         public Monster GetMonsterAt(int x, int y)

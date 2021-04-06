@@ -42,17 +42,19 @@ namespace MyFirstRogueLike
         private static readonly int _inventoryWidth = 80;
         private static readonly int _inventoryHeight = 11;
         private static RLConsole _inventoryConsole;
-                  
+
         public static DungeonMap DungeonMap;
         public static IRandom Random { get; private set; }
         public static Player Player { get; set; }
         public static CommandSystem CommandSystem { get; private set; }
         public static MessageLog MessageLog { get; private set; }
+        public static SchedulingSystem SchedulingSystem { get; internal set; }
 
         static void Main(string[] args)
         {
             // Bitmap font file:
             string fontFileName = "terminal8x8.png";
+            SchedulingSystem = new SchedulingSystem();
 
             int seed = (int)DateTime.UtcNow.Ticks;
             Random = new DotNetRandom(seed);
@@ -98,7 +100,7 @@ namespace MyFirstRogueLike
         private static void OnRootConsoleRender(object sender, UpdateEventArgs e)
         {
             // Blit the sub consoles to the root console in the correct locations
-            
+
             if (_renderRequired)
             {
                 _mapConsole.Clear();
@@ -126,22 +128,32 @@ namespace MyFirstRogueLike
             bool didPlayerAct = false;
             RLKeyPress keyPress = _rootConsole.Keyboard.GetKeyPress();
 
-            if (keyPress != null)
+            if (CommandSystem.IsPlayerTurn)
             {
-                if (keyPress.Key == RLKey.Up)
-                    didPlayerAct = CommandSystem.MovePlayer(Direction.Up);
-                else if (keyPress.Key == RLKey.Down)
-                    didPlayerAct = CommandSystem.MovePlayer(Direction.Down);
-                else if (keyPress.Key == RLKey.Left)
-                    didPlayerAct = CommandSystem.MovePlayer(Direction.Left);
-                else if (keyPress.Key == RLKey.Right)
-                    didPlayerAct = CommandSystem.MovePlayer(Direction.Right);
-                else if (keyPress.Key == RLKey.Escape)
-                    _rootConsole.Close();
-            }
 
-            if (didPlayerAct)
+                if (keyPress != null)
+                {
+                    if (keyPress.Key == RLKey.Up)
+                        didPlayerAct = CommandSystem.MovePlayer(Direction.Up);
+                    else if (keyPress.Key == RLKey.Down)
+                        didPlayerAct = CommandSystem.MovePlayer(Direction.Down);
+                    else if (keyPress.Key == RLKey.Left)
+                        didPlayerAct = CommandSystem.MovePlayer(Direction.Left);
+                    else if (keyPress.Key == RLKey.Right)
+                        didPlayerAct = CommandSystem.MovePlayer(Direction.Right);
+                    else if (keyPress.Key == RLKey.Escape)
+                        _rootConsole.Close();
+                }
+
+                if (didPlayerAct)
+                {
+                    _renderRequired = true;
+                    CommandSystem.EndPlayerTurn();
+                }
+            }
+            else
             {
+                CommandSystem.ActivateMonsters();
                 _renderRequired = true;
             }
         }
