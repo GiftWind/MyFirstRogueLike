@@ -12,6 +12,7 @@ namespace MyFirstRogueLike.Core
     public class DungeonMap : Map<DungeonCell>
     {
         public List<Rectangle> rooms;
+        public List<Door> Doors { get; set; }
 
         public readonly FieldOfView<DungeonCell> _fieldOfView;
         private readonly List<Monster> _monsters;
@@ -35,7 +36,11 @@ namespace MyFirstRogueLike.Core
                     mosterIndex++;
                 }
             }
-            
+
+            foreach (var door in Doors)
+            {
+                door.Draw(mapConsole, this);
+            }
         }
 
         public DungeonMap()
@@ -43,6 +48,7 @@ namespace MyFirstRogueLike.Core
             _fieldOfView = new FieldOfView<DungeonCell>(this);
             rooms = new List<Rectangle>();
             _monsters = new List<Monster>();
+            Doors = new List<Door>();
         }
 
         private void SetSymbolForCell(RLConsole mapConsole, DungeonCell cell)
@@ -114,6 +120,7 @@ namespace MyFirstRogueLike.Core
                 {
                     UpdatePlayerFOV();
                 }
+                OpenDoor(actor, x, y);
                 return true;
             }
 
@@ -184,6 +191,23 @@ namespace MyFirstRogueLike.Core
                 }
             }
             return false;
+        }
+
+        public Door GetDoor(int x, int y)
+        {
+            return Doors.SingleOrDefault(d => d.X == x && d.Y == y);
+        }
+
+        private void OpenDoor(Actor actor, int x, int y)
+        {
+            Door door = GetDoor(x, y);
+            if (door != null && door.IsOpen)
+            {
+                door.IsOpen = true;
+                var cell = GetCell(x, y);
+                SetCellProperties(x, y, true, cell.IsWalkable, cell.IsExplored);
+                Game.MessageLog.AddMessage($"{actor.Name} opened a door");
+            }
         }
     }
 }
